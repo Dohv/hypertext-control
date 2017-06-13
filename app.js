@@ -48,11 +48,12 @@ app.use(passport.session());
 
 /* setting routes */
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/public/index.html');
+  res.send('Hello');
+  // res.sendFile(__dirname + '/public/index.html');
 });
 
-app.use('/projects', projectRoutes);
-app.use('/components', componentRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/components', componentRoutes);
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 
