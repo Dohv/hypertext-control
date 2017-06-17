@@ -18,6 +18,7 @@ const projectRoutes = require('./routes/projects');
 const componentRoutes = require('./routes/components');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users')
+const htcRoutes = require('./routes/htc')
 
 /* setting up port & listen */
 const PORT = process.env.PORT || 3001;
@@ -26,8 +27,8 @@ app.listen(PORT, function() {
 });
 
 /* setting up views */
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 /* setting static file */
 app.use('/static', express.static(path.join(__dirname, 'public')));
@@ -56,6 +57,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/components', componentRoutes);
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
+app.use('/htc', htcRoutes);
 
 /* handling 404 */
 app.get('*', function(req, res) {

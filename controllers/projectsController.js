@@ -30,6 +30,7 @@ controller.show = (req, res) => {
 
 controller.create = (req, res) => {
   Project.create({
+    user_id: req.body.user_id,
     title: req.body.title,
     data: req.body.data,
   })

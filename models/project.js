@@ -14,10 +14,10 @@ Project.create = project => {
   return db.one(
     `
       INSERT INTO projects
-      (title, data)
-      VALUES ($1, $2) RETURNING *
+      (user_id, title, data)
+      VALUES ($1, $2, $3) RETURNING *
     `,
-    [project.title, project.data]
+    [project.user_id, project.title, project.data]
   );
 };
 
@@ -25,11 +25,12 @@ Project.update = (project, id) => {
   return db.none(
     `
       UPDATE projects SET
-      title = $1,
-      data = $2,
-      WHERE id = $3
+      user_id = $1,
+      title = $2,
+      data = $3,
+      WHERE id = $4
     `,
-    [project.title, project.data, id]
+    [project.user_id, project.title, project.data, id]
   );
 };
 
