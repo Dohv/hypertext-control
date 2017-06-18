@@ -1,5 +1,3 @@
-const projectNameInput = document.getElementById('project_name_input');
-
 const MasterState = {
 
   /* user information */
@@ -25,12 +23,22 @@ const MasterState = {
   nodes: [],
   nodeIdx: -1,
 
+  /* navigation knob states (either 'edit' or 'projects') */
+  navigateMode: 'edit',
+
   /* saving and recalling */
+  projectsData: [],
   saveProjectModalWindow: document.getElementById('save_project_modal'),
   projectNameInput: document.getElementById('project_name_input'),
+  openProjectModalWindow: document.getElementById('open_project_modal'),
+  projectPreview: null,
   //modalWindowXBox: document.getElementsByClassName('close')[0],
-  modalWindowIsOpen: false,
+  saveProjectWindowIsOpen: false,
+  openProjectWindowIsOpen: false,
   projectTitle: '',
+
+  previewableProjectsDOM: [],
+  previewableProjectDOMIdx: -1,
 
   initialize: function () {
     this.projectNameInput.addEventListener('change', event => {

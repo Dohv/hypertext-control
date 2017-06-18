@@ -7,7 +7,7 @@ function keyInputs() {
   document.addEventListener('keyup', event => {
     switch (event.key) {
       case 'Enter':
-        if (MasterState.modalWindowIsOpen) {
+        if (MasterState.saveProjectWindowIsOpen) {
           DatabaseFunctions.saveProject();
         }
         break;

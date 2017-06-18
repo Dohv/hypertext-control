@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,8 +76,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var projectNameInput = document.getElementById('project_name_input');
-
 var MasterState = {
 
   /* user information */
@@ -103,12 +101,22 @@ var MasterState = {
   nodes: [],
   nodeIdx: -1,
 
+  /* navigation knob states (either 'edit' or 'projects') */
+  navigateMode: 'edit',
+
   /* saving and recalling */
+  projectsData: [],
   saveProjectModalWindow: document.getElementById('save_project_modal'),
   projectNameInput: document.getElementById('project_name_input'),
+  openProjectModalWindow: document.getElementById('open_project_modal'),
+  projectPreview: null,
   //modalWindowXBox: document.getElementsByClassName('close')[0],
-  modalWindowIsOpen: false,
+  saveProjectWindowIsOpen: false,
+  openProjectWindowIsOpen: false,
   projectTitle: '',
+
+  previewableProjectsDOM: [],
+  previewableProjectDOMIdx: -1,
 
   initialize: function initialize() {
     var _this = this;
@@ -124,6 +132,29 @@ exports.default = MasterState;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function toRGBA(rgba) {
+  return "rgba(" + rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ", " + rgba[3] + ")";
+}
+
+var Conversions = {
+
+  backgroundColor: toRGBA,
+  color: toRGBA
+
+};
+
+exports.default = Conversions;
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -149,7 +180,7 @@ var _Helpers = __webpack_require__(5);
 
 var _Helpers2 = _interopRequireDefault(_Helpers);
 
-var _Conversions = __webpack_require__(2);
+var _Conversions = __webpack_require__(1);
 
 var _Conversions2 = _interopRequireDefault(_Conversions);
 
@@ -170,16 +201,13 @@ var ControlFunctions = {
     nodeView.setAttribute('contenteditable', 'true');
     nodeView.innerHTML = _DefaultContent2.default[nodeType];
     /*
-        nodeView.addEventListener('change', event => {
-          console.log('CHANGED! to.. ' + event.target.value);
-          MasterState.nodes[MasterState.nodeIdx].content = event.target.value;
-        });
+        nodeView.onfocus = event => {
+          Helpers.selectElementContents(event.target);
+        };
     */
+
     for (var CSSProperty in node.style) {
       console.log(node.style[CSSProperty]);
-      /*nodeView.style[CSSProperty] = node.style[CSSProperty].convert(
-        node.style[CSSProperty].data
-      );*/
       nodeView.style[CSSProperty] = _Conversions2.default[CSSProperty](node.style[CSSProperty].data);
     }
 
@@ -198,56 +226,37 @@ var ControlFunctions = {
 
   navigate: function navigate(direction) {
 
-    if (_MasterState2.default.DOMCurrentNode !== null) {
-      var sibling = direction === -1 ? _MasterState2.default.DOMCurrentNode.previousSibling : _MasterState2.default.DOMCurrentNode.nextSibling;
-      if (sibling !== null) {
-        _Helpers2.default.clearSelection();
-        sibling.focus();
-        _Helpers2.default.selectElementContents(sibling);
-        //MasterState.isBeingEdited = false;
-        _MasterState2.default.nodes[_MasterState2.default.nodeIdx].content = _MasterState2.default.DOMCurrentNode.innerHTML;
-        _MasterState2.default.nodeIdx += direction;
-        _MasterState2.default.DOMCurrentNode = sibling;
-        _MasterState2.default.DOMCurrentNode.scrollIntoView();
-      }
+    switch (_MasterState2.default.navigateMode) {
+      case 'edit':
+        if (_MasterState2.default.DOMCurrentNode !== null) {
+          var sibling = direction === -1 ? _MasterState2.default.DOMCurrentNode.previousSibling : _MasterState2.default.DOMCurrentNode.nextSibling;
+          if (sibling !== null) {
+            _Helpers2.default.clearSelection();
+            sibling.focus();
+            _Helpers2.default.selectElementContents(sibling);
+            _MasterState2.default.nodes[_MasterState2.default.nodeIdx].content = _MasterState2.default.DOMCurrentNode.innerHTML;
+            _MasterState2.default.nodeIdx += direction;
+            _MasterState2.default.DOMCurrentNode = sibling;
+            _MasterState2.default.DOMCurrentNode.scrollIntoView();
+          }
+        }
+        break;
+      case 'projects':
+        console.log('navigating in projects mode');
+        var idx = _MasterState2.default.previewableProjectDOMIdx + direction;
+        if (idx >= 0 && idx < _MasterState2.default.previewableProjectsDOM.length) {
+          _MasterState2.default.projectPreview.parentNode.replaceChild(_MasterState2.default.previewableProjectsDOM[idx], _MasterState2.default.projectPreview);
+          _MasterState2.default.projectPreview = _MasterState2.default.previewableProjectsDOM[idx];
+          _MasterState2.default.previewableProjectDOMIdx = idx;
+        }
     }
   },
 
-  changeStyle: function changeStyle(CSSProperty, idx, value) {},
-
-  saveProject: function saveProject() {}
+  changeStyle: function changeStyle(CSSProperty, idx, value) {}
 
 };
 
 exports.default = ControlFunctions;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-function toRGBA(rgba) {
-  return "rgba(" + rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ", " + rgba[3] + ")";
-}
-
-var Conversions = {
-
-  backgroundColor: toRGBA,
-  color: toRGBA
-  /*
-    toRGBA: function (rgba) {
-      return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3]})`;
-    },
-  */
-
-};
-
-exports.default = Conversions;
 
 /***/ }),
 /* 3 */
@@ -276,25 +285,29 @@ var _Helpers = __webpack_require__(5);
 
 var _Helpers2 = _interopRequireDefault(_Helpers);
 
+var _loadProjects = __webpack_require__(10);
+
+var _loadProjects2 = _interopRequireDefault(_loadProjects);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var DatabaseFunctions = {
 
   saveProject: function saveProject() {
-    console.log(_MasterState2.default.nodes);
 
-    if (!_MasterState2.default.modalWindowIsOpen) {
+    if (!_MasterState2.default.saveProjectWindowIsOpen) {
       _MasterState2.default.saveProjectModalWindow.style.display = 'block';
       _MasterState2.default.projectNameInput.focus();
-      _MasterState2.default.modalWindowIsOpen = true;
+      _MasterState2.default.saveProjectWindowIsOpen = true;
     } else {
       _MasterState2.default.projectNameInput.blur();
       _MasterState2.default.nodes[_MasterState2.default.nodeIdx].content = _MasterState2.default.DOMCurrentNode.innerHTML;
       _MasterState2.default.saveProjectModalWindow.style.display = 'none';
-      _MasterState2.default.modalWindowIsOpen = false;
+      _MasterState2.default.saveProjectWindowIsOpen = false;
+
       console.log('user id: ' + _MasterState2.default.userID);
       console.log('project title: ' + _MasterState2.default.projectTitle);
-      //MasterState.modalWindowIsOpen = false;
+
       fetch('/api/projects', {
         credentials: 'same-origin',
         method: 'POST',
@@ -316,18 +329,69 @@ var DatabaseFunctions = {
         }
       });
     }
+  },
 
-    /*
-        const project = MasterState.nodes.map(node => {
-          const newNode = {};
-          newNode.type = node.type;
-          newNode.content = node.content;
-          newNode.style = {};
-          for (let CSSProperty in node.style) {
-            newNode.style[CSSProperty] = node.style[CSSProperty];
-          }
-        });
-    */
+  openProject: function openProject() {
+
+    if (!_MasterState2.default.openProjectWindowIsOpen) {
+
+      _MasterState2.default.openProjectModalWindow.style.display = 'block';
+      _MasterState2.default.openProjectWindowIsOpen = true;
+      _MasterState2.default.navigateMode = 'projects';
+
+      fetch('/api/projects', {
+        credentials: 'same-origin'
+        /*
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  user_id: MasterState.userID,
+                })
+        */
+      }).then(function (res) {
+        return res.json();
+      }).then(function (jsonRes) {
+        console.log(jsonRes);
+        if (jsonRes.message === 'ok') {
+          console.log('got projects successfully');
+          console.log(jsonRes.projectsData);
+          _MasterState2.default.projectsData = jsonRes.projectsData;
+          (0, _loadProjects2.default)(jsonRes.projectsData);
+        } else {
+          alert('Unable to get projects');
+          console.log('error');
+        }
+      });
+    } else {
+      /* make sure the last edit was put into the nodes */
+      //MasterState.nodes[MasterState.nodeIdx].content =
+      //MasterState.DOMCurrentNode.innerHTML;
+
+      _MasterState2.default.navigateMode = 'edit';
+      _MasterState2.default.openProjectModalWindow.style.display = 'none';
+      var selectedDocument = _MasterState2.default.projectPreview.parentNode.removeChild(_MasterState2.default.projectPreview);
+      selectedDocument.removeAttribute('class');
+      selectedDocument.setAttribute('id', 'root');
+      selectedDocument.childNodes.forEach(function (node) {
+        node.setAttribute('spellcheck', 'false');
+        node.setAttribute('contenteditable', 'true');
+        node.onfocus = function (event) {
+          _Helpers2.default.selectElementContents(event.target);
+        };
+      });
+      _MasterState2.default.DOMroot.parentNode.replaceChild(selectedDocument, _MasterState2.default.DOMroot);
+      _MasterState2.default.DOMroot = selectedDocument;
+      _MasterState2.default.nodes = _MasterState2.default.projectsData[_MasterState2.default.previewableProjectDOMIdx].data;
+      _MasterState2.default.DOMCurrentNode = _MasterState2.default.DOMroot.firstChild;
+      _MasterState2.default.nodeIdx = 0;
+      console.log(_MasterState2.default.nodes);
+
+      _MasterState2.default.openProjectWindowIsOpen = false;
+      /*
+      */
+    }
   }
 
 };
@@ -399,7 +463,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Conversions = __webpack_require__(2);
+var _Conversions = __webpack_require__(1);
 
 var _Conversions2 = _interopRequireDefault(_Conversions);
 
@@ -468,7 +532,7 @@ var _MIDI = __webpack_require__(9);
 
 var _MIDI2 = _interopRequireDefault(_MIDI);
 
-var _ControlFunctions = __webpack_require__(1);
+var _ControlFunctions = __webpack_require__(2);
 
 var _ControlFunctions2 = _interopRequireDefault(_ControlFunctions);
 
@@ -483,6 +547,7 @@ var MIDIProgramFlow = {
   append: _ControlFunctions2.default.append,
   changeStyle: _ControlFunctions2.default.changeStyle,
   saveProject: _DatabaseFunctions2.default.saveProject,
+  openProject: _DatabaseFunctions2.default.openProject,
   navigate: _ControlFunctions2.default.navigate,
   editContent: _ControlFunctions2.default.editContent,
 
@@ -505,7 +570,7 @@ var MIDIProgramFlow = {
           this.append('div');
           break;
         case 15:
-          this.editContent();
+          this.openProject();
           break;
         case 23:
           this.saveProject();
@@ -572,7 +637,7 @@ var _MasterState = __webpack_require__(0);
 
 var _MasterState2 = _interopRequireDefault(_MasterState);
 
-var _ControlFunctions = __webpack_require__(1);
+var _ControlFunctions = __webpack_require__(2);
 
 var _ControlFunctions2 = _interopRequireDefault(_ControlFunctions);
 
@@ -587,7 +652,7 @@ function keyInputs() {
   document.addEventListener('keyup', function (event) {
     switch (event.key) {
       case 'Enter':
-        if (_MasterState2.default.modalWindowIsOpen) {
+        if (_MasterState2.default.saveProjectWindowIsOpen) {
           _DatabaseFunctions2.default.saveProject();
         }
         break;
@@ -653,6 +718,60 @@ exports.default = MIDI;
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _MasterState = __webpack_require__(0);
+
+var _MasterState2 = _interopRequireDefault(_MasterState);
+
+var _Conversions = __webpack_require__(1);
+
+var _Conversions2 = _interopRequireDefault(_Conversions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function loadProjects(projectsData) {
+
+  _MasterState2.default.previewableProjectsDOM = projectsData.map(function (project) {
+
+    var projectNode = document.createElement('div');
+    projectNode.setAttribute('id', 'project_preview');
+    projectNode.setAttribute('class', 'modal-content');
+
+    console.log(project.data);
+
+    project.data.forEach(function (node) {
+      var element = document.createElement(node.type);
+      for (var CSSProperty in node.style) {
+        element.style[CSSProperty] = _Conversions2.default[CSSProperty](node.style[CSSProperty].data);
+      }
+      element.innerHTML = node.content;
+      projectNode.appendChild(element);
+    });
+
+    return projectNode;
+  });
+
+  if (_MasterState2.default.previewableProjectsDOM.length > 0) {
+    _MasterState2.default.previewableProjectDOMIdx = 0;
+    var firstProject = _MasterState2.default.previewableProjectsDOM[_MasterState2.default.previewableProjectDOMIdx];
+    _MasterState2.default.openProjectModalWindow.appendChild(firstProject);
+    _MasterState2.default.projectPreview = firstProject;
+  }
+  console.log('previewableProjectsDOM: ' + _MasterState2.default.previewableProjectsDOM);
+}
+
+exports.default = loadProjects;
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

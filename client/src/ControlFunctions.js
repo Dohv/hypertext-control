@@ -19,16 +19,13 @@ const ControlFunctions = {
     nodeView.setAttribute('contenteditable', 'true');
     nodeView.innerHTML = DefaultContent[nodeType];
 /*
-    nodeView.addEventListener('change', event => {
-      console.log('CHANGED! to.. ' + event.target.value);
-      MasterState.nodes[MasterState.nodeIdx].content = event.target.value;
-    });
+    nodeView.onfocus = event => {
+      Helpers.selectElementContents(event.target);
+    };
 */
+
     for (let CSSProperty in node.style) {
       console.log(node.style[CSSProperty]);
-      /*nodeView.style[CSSProperty] = node.style[CSSProperty].convert(
-        node.style[CSSProperty].data
-      );*/
       nodeView.style[CSSProperty] =
         Conversions[CSSProperty](node.style[CSSProperty].data);
     }
@@ -50,29 +47,39 @@ const ControlFunctions = {
 
   navigate: function (direction) {
 
-    if (MasterState.DOMCurrentNode !== null) {
-      const sibling = (direction === -1) ?
-        MasterState.DOMCurrentNode.previousSibling :
-        MasterState.DOMCurrentNode.nextSibling;
-      if (sibling !== null) {
-        Helpers.clearSelection();
-        sibling.focus();
-        Helpers.selectElementContents(sibling);
-        //MasterState.isBeingEdited = false;
-        MasterState.nodes[MasterState.nodeIdx].content =
-          MasterState.DOMCurrentNode.innerHTML;
-        MasterState.nodeIdx += direction;
-        MasterState.DOMCurrentNode = sibling;
-        MasterState.DOMCurrentNode.scrollIntoView();
-      }
+    switch (MasterState.navigateMode) {
+      case 'edit':
+        if (MasterState.DOMCurrentNode !== null) {
+          const sibling = (direction === -1) ?
+            MasterState.DOMCurrentNode.previousSibling :
+            MasterState.DOMCurrentNode.nextSibling;
+          if (sibling !== null) {
+            Helpers.clearSelection();
+            sibling.focus();
+            Helpers.selectElementContents(sibling);
+            MasterState.nodes[MasterState.nodeIdx].content =
+              MasterState.DOMCurrentNode.innerHTML;
+            MasterState.nodeIdx += direction;
+            MasterState.DOMCurrentNode = sibling;
+            MasterState.DOMCurrentNode.scrollIntoView();
+          }
+        }
+        break;
+      case 'projects':
+        console.log('navigating in projects mode');
+        const idx = MasterState.previewableProjectDOMIdx + direction;
+        if (idx >= 0 && idx < MasterState.previewableProjectsDOM.length) {
+          MasterState.projectPreview.parentNode.replaceChild(
+            MasterState.previewableProjectsDOM[idx], MasterState.projectPreview
+          );
+          MasterState.projectPreview = MasterState.previewableProjectsDOM[idx];
+          MasterState.previewableProjectDOMIdx = idx;
+        }
     }
 
   },
 
   changeStyle: function (CSSProperty, idx, value) {
-  },
-
-  saveProject: function () {
   },
 
 };

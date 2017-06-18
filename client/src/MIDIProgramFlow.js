@@ -8,6 +8,7 @@ const MIDIProgramFlow = {
   append: ControlFunctions.append,
   changeStyle: ControlFunctions.changeStyle,
   saveProject: DatabaseFunctions.saveProject,
+  openProject: DatabaseFunctions.openProject,
   navigate: ControlFunctions.navigate,
   editContent: ControlFunctions.editContent,
 
@@ -30,7 +31,7 @@ const MIDIProgramFlow = {
           this.append('div');
           break;
         case 15:
-          this.editContent();
+          this.openProject();
           break;
         case 23:
           this.saveProject();

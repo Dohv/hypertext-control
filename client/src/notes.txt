@@ -1,2 +1,10 @@
 send MIDI to initialize
 deprecate isBeingEdited
+
+state dependency list
+
+css
+html/css zip download
+homepage and nav links
+description
+

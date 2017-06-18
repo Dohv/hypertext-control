@@ -2,25 +2,26 @@ import MasterState from './MasterState';
 import DefaultContent from './DefaultContent';
 import defaultStyles from './defaultStyles';
 import Helpers from './Helpers';
+import loadProjects from './loadProjects';
 
 const DatabaseFunctions = {
 
   saveProject: function () {
-    console.log(MasterState.nodes);
 
-    if (!MasterState.modalWindowIsOpen) {
+    if (!MasterState.saveProjectWindowIsOpen) {
       MasterState.saveProjectModalWindow.style.display = 'block';
       MasterState.projectNameInput.focus();
-      MasterState.modalWindowIsOpen = true;
+      MasterState.saveProjectWindowIsOpen = true;
     } else {
       MasterState.projectNameInput.blur();
       MasterState.nodes[MasterState.nodeIdx].content =
         MasterState.DOMCurrentNode.innerHTML;
       MasterState.saveProjectModalWindow.style.display = 'none';
-      MasterState.modalWindowIsOpen = false;
+      MasterState.saveProjectWindowIsOpen = false;
+
       console.log('user id: ' + MasterState.userID);
       console.log('project title: ' + MasterState.projectTitle);
-      //MasterState.modalWindowIsOpen = false;
+
       fetch('/api/projects', {
         credentials: 'same-origin',
         method: 'POST',
@@ -45,17 +46,76 @@ const DatabaseFunctions = {
       });
     }
 
+  },
+
+  openProject: function () {
+
+    if (!MasterState.openProjectWindowIsOpen) {
+
+      MasterState.openProjectModalWindow.style.display = 'block';
+      MasterState.openProjectWindowIsOpen = true;
+      MasterState.navigateMode = 'projects';
+
+      fetch('/api/projects', {
+        credentials: 'same-origin',
 /*
-    const project = MasterState.nodes.map(node => {
-      const newNode = {};
-      newNode.type = node.type;
-      newNode.content = node.content;
-      newNode.style = {};
-      for (let CSSProperty in node.style) {
-        newNode.style[CSSProperty] = node.style[CSSProperty];
-      }
-    });
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: MasterState.userID,
+        })
 */
+      })
+      .then(res => {
+        return res.json();
+      })
+      .then(jsonRes => {
+        console.log(jsonRes);
+        if (jsonRes.message === 'ok') {
+          console.log('got projects successfully');
+          console.log(jsonRes.projectsData);
+          MasterState.projectsData = jsonRes.projectsData;
+          loadProjects(jsonRes.projectsData);
+        } else {
+          alert('Unable to get projects');
+          console.log('error');
+        }
+      });
+    } else {
+      /* make sure the last edit was put into the nodes */
+      //MasterState.nodes[MasterState.nodeIdx].content =
+        //MasterState.DOMCurrentNode.innerHTML;
+
+      MasterState.navigateMode = 'edit';
+      MasterState.openProjectModalWindow.style.display = 'none';
+      const selectedDocument = MasterState.projectPreview.parentNode.removeChild(
+        MasterState.projectPreview
+      );
+      selectedDocument.removeAttribute('class');
+      selectedDocument.setAttribute('id', 'root');
+      selectedDocument.childNodes.forEach(node => {
+        node.setAttribute('spellcheck', 'false');
+        node.setAttribute('contenteditable', 'true');
+        node.onfocus = event => {
+          Helpers.selectElementContents(event.target);
+        };
+      });
+      MasterState.DOMroot.parentNode.replaceChild(
+        selectedDocument, MasterState.DOMroot
+      );
+      MasterState.DOMroot = selectedDocument;
+      MasterState.nodes = MasterState.projectsData[MasterState.previewableProjectDOMIdx].data;
+      MasterState.DOMCurrentNode = MasterState.DOMroot.firstChild;
+      MasterState.nodeIdx = 0;
+      console.log(MasterState.nodes);
+
+      MasterState.openProjectWindowIsOpen = false;
+/*
+*/
+    }
+
   },
 
 };
