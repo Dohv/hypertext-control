@@ -11,6 +11,7 @@ const MIDIProgramFlow = {
   changeStyle: ControlFunctions.changeStyle,
   saveProject: DatabaseFunctions.saveProject,
   openProject: DatabaseFunctions.openProject,
+  downloadProject: DatabaseFunctions.downloadProject,
   navigate: ControlFunctions.navigate,
   editContent: ControlFunctions.editContent,
 
@@ -34,6 +35,9 @@ const MIDIProgramFlow = {
           break;
         case 15:
           this.openProject();
+          break;
+        case 22:
+          this.downloadProject();
           break;
         case 23:
           this.saveProject();

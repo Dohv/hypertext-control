@@ -344,6 +344,8 @@ var _loadProjects2 = _interopRequireDefault(_loadProjects);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//import download from './download';
+
 var DatabaseFunctions = {
 
   saveProject: function saveProject() {
@@ -443,6 +445,39 @@ var DatabaseFunctions = {
 
       _MasterState2.default.openProjectWindowIsOpen = false;
       /*
+      */
+    }
+  },
+
+  downloadProject: function downloadProject() {
+
+    if (_MasterState2.default.openProjectWindowIsOpen) {
+
+      var id = _MasterState2.default.projectsData[_MasterState2.default.previewableProjectDOMIdx].id;
+      console.log('tried to fetch the download');
+      //window.location.href = 'localhost:3001/zip/4';
+      window.open('localhost:3001/zip/4', 'HTML CSS Download');
+      /*
+            fetch(`/zip/${4}`, {
+              credentials: 'same-origin',*/
+      /*
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                user_id: MasterState.userID,
+              })
+      */
+      /*
+            })
+            .then(res => {
+              return res.blob
+            })
+            .then(blob => {
+              download(blob, 'html_css', 'application/zip');
+            });
+      
       */
     }
   }
@@ -603,6 +638,7 @@ var MIDIProgramFlow = {
   changeStyle: _ControlFunctions2.default.changeStyle,
   saveProject: _DatabaseFunctions2.default.saveProject,
   openProject: _DatabaseFunctions2.default.openProject,
+  downloadProject: _DatabaseFunctions2.default.downloadProject,
   navigate: _ControlFunctions2.default.navigate,
   editContent: _ControlFunctions2.default.editContent,
 
@@ -626,6 +662,9 @@ var MIDIProgramFlow = {
           break;
         case 15:
           this.openProject();
+          break;
+        case 22:
+          this.downloadProject();
           break;
         case 23:
           this.saveProject();

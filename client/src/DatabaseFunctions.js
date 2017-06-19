@@ -3,6 +3,7 @@ import DefaultContent from './DefaultContent';
 import defaultStyles from './defaultStyles';
 import Helpers from './Helpers';
 import loadProjects from './loadProjects';
+//import download from './download';
 
 const DatabaseFunctions = {
 
@@ -116,6 +117,39 @@ const DatabaseFunctions = {
 */
     }
 
+  },
+
+  downloadProject: function () {
+
+    if (MasterState.openProjectWindowIsOpen) {
+
+      const id = MasterState.projectsData[MasterState.previewableProjectDOMIdx].id;
+      console.log('tried to fetch the download');
+      //window.location.href = 'localhost:3001/zip/4';
+      //window.open('localhost:3001/zip/4', 'HTML CSS Download');
+/*
+      fetch(`/zip/${4}`, {
+        credentials: 'same-origin',*/
+/*
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: MasterState.userID,
+        })
+*/
+/*
+      })
+      .then(res => {
+        return res.blob
+      })
+      .then(blob => {
+        download(blob, 'html_css', 'application/zip');
+      });
+
+*/
+    }
   },
 
 };

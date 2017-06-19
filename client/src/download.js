@@ -1,36 +1,3 @@
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-  <meta charset='UTF-8'>
-  <title></title>
-  <link rel='stylesheet' href='/static/styles/modal.css'>
-</head>
-<body>
-  <div id='user' value='<%= user.id %>' style='visibility:hidden;'><%= user.id %></div>
-  <!--<h1 id='user' value=''>Welcome <%= user.id %></h1>-->
-  <div id='root'></div>
-
-  <!-- Trigger/Open The Modal -->
-  <!--<button id='myBtn'>Open Modal</button>-->
-
-  <!-- Save Project Modal -->
-  <div id='save_project_modal' class='modal'>
-    <!-- Modal content -->
-    <div class='modal-content'>
-      <!--<span class='close'>&times;</span>-->
-      <label>Project Title</label>
-      <input id='project_name_input' class='save_input' />
-    </div>
-  </div>
-  <!-- Open Project Modal -->
-  <div id='open_project_modal' class='modal'>
-    <!-- Modal content -->
-    <!--<div id='project_preview'>-->
-      <!--<span class='close'>&times;</span>-->
-    <!--</div>-->
-  </div>
-  <!--<script src='/static/src/modal.js'></script>-->
-  <!--<script src='bundle.js'></script>-->
 <script>//download.js v4.2, by dandavis; 2008-2016. [CCBY2] see http://danml.com/download.html for tests/usage
 // v1 landed a FF+Chrome compat way of downloading strings to local un-named files, upgraded to use a hidden frame and optional mime
 // v2 added named files via a[download], msSaveBlob, IE (10+) support, and window.URL support for larger+faster saves than dataURLs
@@ -193,6 +160,3 @@
     return true;
   }; /* end download() */
 }));</script>
-  <script src='/static/src/bundle.js'></script>
-</body>
-</html>
