@@ -3,6 +3,7 @@ import DefaultContent from './DefaultContent';
 import defaultStyles from './defaultStyles';
 import Helpers from './Helpers';
 import Conversions from './Conversions';
+import CSSPropertyMap from './CSSPropertyMap';
 
 const ControlFunctions = {
 
@@ -79,7 +80,37 @@ const ControlFunctions = {
 
   },
 
-  changeStyle: function (CSSProperty, idx, value) {
+  changeStyle: function (propertyIdx, dataIdx, direction) {
+
+    if (dataIdx < CSSPropertyMap[propertyIdx].values.length) {
+      console.log(dataIdx);
+      Helpers.clearSelection();
+      MasterState.DOMCurrentNode.blur();
+      const CSSProperty = CSSPropertyMap[propertyIdx].name;
+      console.log(CSSProperty);
+      const currentDataValue =
+        MasterState.nodes[MasterState.nodeIdx].style[CSSProperty].data[dataIdx];
+      const nextDataValue = currentDataValue + direction *
+        CSSPropertyMap[propertyIdx].values[dataIdx].step;
+      if (nextDataValue >= 
+          CSSPropertyMap[propertyIdx].values[dataIdx].min &&
+          nextDataValue <=
+          CSSPropertyMap[propertyIdx].values[dataIdx].max) {
+        MasterState.nodes[MasterState.nodeIdx]
+          .style[CSSProperty]
+            .data[dataIdx] = nextDataValue;
+          console.log('nextDataValue: ' + nextDataValue);
+        /* change inline DOM styles */
+        MasterState.DOMCurrentNode.style[CSSProperty] =
+          Conversions[CSSProperty](
+            MasterState.nodes[MasterState.nodeIdx].style[CSSProperty].data
+          );
+      }
+/*
+      MasterState.nodes[MasterState.nodeIdx].style[CSSPropertyMap[propertyIdx].name] =
+        CSSPropertyMap[propertyIdx].get(direction);
+*/
+    }
   },
 
 };

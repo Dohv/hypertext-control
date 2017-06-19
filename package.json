@@ -23,6 +23,7 @@
   "author": "Robert Provine",
   "license": "ISC",
   "dependencies": {
+    "adm-zip": "^0.4.7",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.1",
     "cookie-parser": "^1.4.3",

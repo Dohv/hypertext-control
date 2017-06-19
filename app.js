@@ -19,6 +19,7 @@ const componentRoutes = require('./routes/components');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users')
 const htcRoutes = require('./routes/htc')
+const zipRoutes = require('./routes/zip')
 
 /* setting up port & listen */
 const PORT = process.env.PORT || 3001;
@@ -58,6 +59,7 @@ app.use('/api/components', componentRoutes);
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/htc', htcRoutes);
+app.use('/zip', zipRoutes);
 
 /* handling 404 */
 app.get('*', function(req, res) {

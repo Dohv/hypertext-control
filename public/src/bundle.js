@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -82,10 +82,11 @@ var MasterState = {
   userID: document.getElementById('user').innerHTML,
 
   /* MIDI control states */
-  lastSelectKnobValue: 0,
+  lastKnobValues: [0, 0, 0, 0, 0, 0, 0, 0],
 
   CSSPropertyIdx: 0,
   CSSPropertyParamsIdx: 0,
+  CSSPropertyDataIdx: 0,
   lastNavigateNodesValue: 0,
 
   /* content editing */
@@ -164,25 +165,56 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _Conversions = __webpack_require__(1);
+
+var _Conversions2 = _interopRequireDefault(_Conversions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var CSSPropertyMap = [{
+  name: 'color',
+  values: [{ min: 0, max: 255, step: 8 }, { min: 0, max: 255, step: 8 }, { min: 0, max: 255, step: 8 }, { min: 0, max: 1, step: .1 }]
+}, {
+  name: 'backgroundColor',
+  values: [{ min: 0, max: 255, step: 8 }, { min: 0, max: 255, step: 8 }, { min: 0, max: 255, step: 8 }, { min: 0, max: 1, step: .1 }]
+}];
+
+exports.default = CSSPropertyMap;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _MasterState = __webpack_require__(0);
 
 var _MasterState2 = _interopRequireDefault(_MasterState);
 
-var _DefaultContent = __webpack_require__(4);
+var _DefaultContent = __webpack_require__(5);
 
 var _DefaultContent2 = _interopRequireDefault(_DefaultContent);
 
-var _defaultStyles = __webpack_require__(6);
+var _defaultStyles = __webpack_require__(7);
 
 var _defaultStyles2 = _interopRequireDefault(_defaultStyles);
 
-var _Helpers = __webpack_require__(5);
+var _Helpers = __webpack_require__(6);
 
 var _Helpers2 = _interopRequireDefault(_Helpers);
 
 var _Conversions = __webpack_require__(1);
 
 var _Conversions2 = _interopRequireDefault(_Conversions);
+
+var _CSSPropertyMap = __webpack_require__(2);
+
+var _CSSPropertyMap2 = _interopRequireDefault(_CSSPropertyMap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -252,14 +284,35 @@ var ControlFunctions = {
     }
   },
 
-  changeStyle: function changeStyle(CSSProperty, idx, value) {}
+  changeStyle: function changeStyle(propertyIdx, dataIdx, direction) {
+
+    if (dataIdx < _CSSPropertyMap2.default[propertyIdx].values.length) {
+      console.log(dataIdx);
+      _Helpers2.default.clearSelection();
+      _MasterState2.default.DOMCurrentNode.blur();
+      var CSSProperty = _CSSPropertyMap2.default[propertyIdx].name;
+      console.log(CSSProperty);
+      var currentDataValue = _MasterState2.default.nodes[_MasterState2.default.nodeIdx].style[CSSProperty].data[dataIdx];
+      var nextDataValue = currentDataValue + direction * _CSSPropertyMap2.default[propertyIdx].values[dataIdx].step;
+      if (nextDataValue >= _CSSPropertyMap2.default[propertyIdx].values[dataIdx].min && nextDataValue <= _CSSPropertyMap2.default[propertyIdx].values[dataIdx].max) {
+        _MasterState2.default.nodes[_MasterState2.default.nodeIdx].style[CSSProperty].data[dataIdx] = nextDataValue;
+        console.log('nextDataValue: ' + nextDataValue);
+        /* change inline DOM styles */
+        _MasterState2.default.DOMCurrentNode.style[CSSProperty] = _Conversions2.default[CSSProperty](_MasterState2.default.nodes[_MasterState2.default.nodeIdx].style[CSSProperty].data);
+      }
+      /*
+            MasterState.nodes[MasterState.nodeIdx].style[CSSPropertyMap[propertyIdx].name] =
+              CSSPropertyMap[propertyIdx].get(direction);
+      */
+    }
+  }
 
 };
 
 exports.default = ControlFunctions;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -273,19 +326,19 @@ var _MasterState = __webpack_require__(0);
 
 var _MasterState2 = _interopRequireDefault(_MasterState);
 
-var _DefaultContent = __webpack_require__(4);
+var _DefaultContent = __webpack_require__(5);
 
 var _DefaultContent2 = _interopRequireDefault(_DefaultContent);
 
-var _defaultStyles = __webpack_require__(6);
+var _defaultStyles = __webpack_require__(7);
 
 var _defaultStyles2 = _interopRequireDefault(_defaultStyles);
 
-var _Helpers = __webpack_require__(5);
+var _Helpers = __webpack_require__(6);
 
 var _Helpers2 = _interopRequireDefault(_Helpers);
 
-var _loadProjects = __webpack_require__(10);
+var _loadProjects = __webpack_require__(12);
 
 var _loadProjects2 = _interopRequireDefault(_loadProjects);
 
@@ -399,7 +452,7 @@ var DatabaseFunctions = {
 exports.default = DatabaseFunctions;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -421,7 +474,7 @@ var DefaultContent = {
 exports.default = DefaultContent;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -453,7 +506,7 @@ var Helpers = {
 exports.default = Helpers;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -478,11 +531,9 @@ function defaultStyles(nodeType) {
       style = {
         color: {
           data: [0, 0, 0, 1]
-          //convert: Conversions.toRGBA,
         },
         backgroundColor: {
           data: [255, 255, 255, 1]
-          //convert: Conversions.toRGBA,
         }
       };
       return style;
@@ -490,22 +541,18 @@ function defaultStyles(nodeType) {
       return {
         color: {
           data: [0, 100, 0, 1]
-          //convert: Conversions.toRGBA,
         },
         backgroundColor: {
           data: [255, 255, 255, 1]
-          //convert: Conversions.toRGBA,
         }
       };
     case 'div':
       return {
         color: {
           data: [0, 0, 0, 1]
-          //convert: Conversions.toRGBA,
         },
         backgroundColor: {
           data: [255, 0, 255, 1]
-          //convert: Conversions.toRGBA,
         }
       };
   }
@@ -514,7 +561,7 @@ function defaultStyles(nodeType) {
 exports.default = defaultStyles;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -528,17 +575,25 @@ var _MasterState = __webpack_require__(0);
 
 var _MasterState2 = _interopRequireDefault(_MasterState);
 
-var _MIDI = __webpack_require__(9);
+var _MIDI = __webpack_require__(11);
 
 var _MIDI2 = _interopRequireDefault(_MIDI);
 
-var _ControlFunctions = __webpack_require__(2);
+var _ControlFunctions = __webpack_require__(3);
 
 var _ControlFunctions2 = _interopRequireDefault(_ControlFunctions);
 
-var _DatabaseFunctions = __webpack_require__(3);
+var _DatabaseFunctions = __webpack_require__(4);
 
 var _DatabaseFunctions2 = _interopRequireDefault(_DatabaseFunctions);
+
+var _CSSPropertyMap = __webpack_require__(2);
+
+var _CSSPropertyMap2 = _interopRequireDefault(_CSSPropertyMap);
+
+var _KnobsButtons = __webpack_require__(10);
+
+var _KnobsButtons2 = _interopRequireDefault(_KnobsButtons);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -579,31 +634,45 @@ var MIDIProgramFlow = {
     }
 
     if (type === 176) {
+      if (num >= 1 && num <= 4) {
+        _MasterState2.default.CSSPropertyDataIdx = num - 1 + _MasterState2.default.CSSPropertyParamsIdx * 4;
+        _KnobsButtons2.default.infiniteKnob(val, num - 1, function (direction) {
+          MIDIProgramFlow.changeStyle(_MasterState2.default.CSSPropertyIdx, _MasterState2.default.CSSPropertyDataIdx, direction);
+        });
+      }
       switch (num) {
-        case 1:
-          this.append('h1');
+        case 5:
+          _KnobsButtons2.default.infiniteKnob(val, 4, function (direction) {
+            var idx = _MasterState2.default.CSSPropertyParamsIdx + direction;
+            if (idx >= 0 && idx <= Math.floor((_CSSPropertyMap2.default[_MasterState2.default.CSSPropertyIdx].values.length - 1) / 4)) {
+              _MasterState2.default.CSSPropertyParamsIdx = idx;
+            }
+          });
           break;
-        case 2:
-          this.append('p');
-          break;
-        case 3:
-          this.append('div');
-          break;
-        case 4:
-          this.append('div');
+        case 6:
+          _KnobsButtons2.default.infiniteKnob(val, 5, function (direction) {
+            var idx = _MasterState2.default.CSSPropertyIdx + direction;
+            if (idx >= 0 && idx < _CSSPropertyMap2.default.length) {
+              _MasterState2.default.CSSPropertyIdx = idx;
+            }
+          });
           break;
         case 8:
-          if (val > _MasterState2.default.lastKnobSelectValue) {
-            this.navigate(1);
-          } else if (val < _MasterState2.default.lastKnobSelectValue) {
-            this.navigate(-1);
-          } else if (val === _MasterState2.default.lastKnobSelectValue && val === 0) {
-            this.navigate(-1);
-          } else {
-            this.navigate(1);
-          }
-          _MasterState2.default.lastKnobSelectValue = val;
-          break;
+          _KnobsButtons2.default.infiniteKnob(val, 7, this.navigate);
+        /*
+                case 1:
+                  this.append('h1');
+                  break;
+                case 2:
+                  this.append('p');
+                  break;
+                case 3:
+                  this.append('div');
+                  break;
+                case 4:
+                  this.append('div');
+                  break;
+        */
       }
     }
 
@@ -623,7 +692,7 @@ var MIDIProgramFlow = {
 exports.default = MIDIProgramFlow;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -637,11 +706,11 @@ var _MasterState = __webpack_require__(0);
 
 var _MasterState2 = _interopRequireDefault(_MasterState);
 
-var _ControlFunctions = __webpack_require__(2);
+var _ControlFunctions = __webpack_require__(3);
 
 var _ControlFunctions2 = _interopRequireDefault(_ControlFunctions);
 
-var _DatabaseFunctions = __webpack_require__(3);
+var _DatabaseFunctions = __webpack_require__(4);
 
 var _DatabaseFunctions2 = _interopRequireDefault(_DatabaseFunctions);
 
@@ -663,7 +732,45 @@ function keyInputs() {
 exports.default = keyInputs;
 
 /***/ }),
-/* 9 */
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _MasterState = __webpack_require__(0);
+
+var _MasterState2 = _interopRequireDefault(_MasterState);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var KnobsButtons = {
+
+  /* takes the knob value and executes func(1) or func(-1) */
+  infiniteKnob: function infiniteKnob(val, lastKnobValueIdx, func) {
+
+    if (val > _MasterState2.default.lastKnobValues[lastKnobValueIdx]) {
+      func(1);
+    } else if (val < _MasterState2.default.lastKnobValues[lastKnobValueIdx]) {
+      func(-1);
+    } else if (val === _MasterState2.default.lastKnobValues[lastKnobValueIdx] && val === 0) {
+      func(-1);
+    } else {
+      func(1);
+    }
+    _MasterState2.default.lastKnobValues[lastKnobValueIdx] = val;
+  }
+
+};
+
+exports.default = KnobsButtons;
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -689,7 +796,14 @@ var MIDI = {
     }
     for (var output = outputs.next(); output && !output.done; output = outputs.next()) {
       MIDI.devices.push(output.value);
+      console.log(output);
     }
+    console.log(MIDI.devices);
+    //MIDI.devices.forEach(device => {
+    for (var i = 1; i <= 8; i++) {
+      MIDI.devices[0].send([176, i, 0]);
+    }
+    //});
   },
 
   /* check if browser supports MIDI */
@@ -706,7 +820,7 @@ var MIDI = {
 
   /* on failed response */
   onMIDIFailure: function onMIDIFailure(error) {
-    alert('No access to MIDI devices or your browser doesn\'t support WebMIDI API. Please use WebMIDIAPIShim " + error');
+    alert('No access to MIDI devices or your browser doesn\'t support WebMIDI API.');
   },
 
   /* main callback for when a midi message occurs */
@@ -717,7 +831,7 @@ var MIDI = {
 exports.default = MIDI;
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -771,7 +885,7 @@ function loadProjects(projectsData) {
 exports.default = loadProjects;
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -781,11 +895,11 @@ var _MasterState = __webpack_require__(0);
 
 var _MasterState2 = _interopRequireDefault(_MasterState);
 
-var _MIDIProgramFlow = __webpack_require__(7);
+var _MIDIProgramFlow = __webpack_require__(8);
 
 var _MIDIProgramFlow2 = _interopRequireDefault(_MIDIProgramFlow);
 
-var _keyInputs = __webpack_require__(8);
+var _keyInputs = __webpack_require__(9);
 
 var _keyInputs2 = _interopRequireDefault(_keyInputs);
 

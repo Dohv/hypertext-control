@@ -4,10 +4,11 @@ const MasterState = {
   userID: document.getElementById('user').innerHTML,
 
   /* MIDI control states */
-  lastSelectKnobValue: 0,
+  lastKnobValues: [ 0, 0, 0, 0, 0, 0, 0, 0 ],
 
   CSSPropertyIdx: 0,
   CSSPropertyParamsIdx: 0,
+  CSSPropertyDataIdx: 0,
   lastNavigateNodesValue: 0,
 
   /* content editing */

@@ -15,7 +15,14 @@ const MIDI = {
     }
     for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
       MIDI.devices.push(output.value);
+      console.log(output);
     }
+    console.log(MIDI.devices);
+    //MIDI.devices.forEach(device => {
+      for (let i = 1; i <= 8; i++) {
+        MIDI.devices[0].send([176, i, 0]);
+      }
+    //});
   },
 
   /* check if browser supports MIDI */
@@ -32,7 +39,7 @@ const MIDI = {
 
   /* on failed response */
   onMIDIFailure: function (error) {
-    alert('No access to MIDI devices or your browser doesn\'t support WebMIDI API. Please use WebMIDIAPIShim " + error');
+    alert('No access to MIDI devices or your browser doesn\'t support WebMIDI API.');
   },
 
   /* main callback for when a midi message occurs */

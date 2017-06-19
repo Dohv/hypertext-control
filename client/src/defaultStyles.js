@@ -9,11 +9,9 @@ function defaultStyles(nodeType) {
       style = {
         color: {
           data: [0, 0, 0, 1],
-          //convert: Conversions.toRGBA,
         },
         backgroundColor: {
           data: [255, 255, 255, 1],
-          //convert: Conversions.toRGBA,
         },
       };
       return style;
@@ -21,22 +19,18 @@ function defaultStyles(nodeType) {
       return {
         color: {
           data: [0, 100, 0, 1],
-          //convert: Conversions.toRGBA,
         },
         backgroundColor: {
           data: [255, 255, 255, 1],
-          //convert: Conversions.toRGBA,
         },
       };
     case 'div':
       return {
         color: {
           data: [0, 0, 0, 1],
-          //convert: Conversions.toRGBA,
         },
         backgroundColor: {
           data: [255, 0, 255, 1],
-          //convert: Conversions.toRGBA,
         },
       };
   }

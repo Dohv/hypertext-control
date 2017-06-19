@@ -2,6 +2,8 @@ import MasterState from './MasterState';
 import MIDI from './MIDI';
 import ControlFunctions from './ControlFunctions';
 import DatabaseFunctions from './DatabaseFunctions';
+import CSSPropertyMap from './CSSPropertyMap';
+import KnobsButtons from './KnobsButtons';
 
 const MIDIProgramFlow = {
 
@@ -40,7 +42,42 @@ const MIDIProgramFlow = {
     }
 
     if (type === 176) {
+      if (num >= 1 && num <= 4) {
+        MasterState.CSSPropertyDataIdx =
+          (num - 1) + MasterState.CSSPropertyParamsIdx * 4;
+        KnobsButtons.infiniteKnob(val, num - 1, direction => {
+          MIDIProgramFlow.changeStyle(
+            MasterState.CSSPropertyIdx, 
+            MasterState.CSSPropertyDataIdx, 
+            direction
+          );
+        });
+      }
       switch (num) {
+        case 5:
+          KnobsButtons.infiniteKnob(val, 4, direction => {
+            const idx = MasterState.CSSPropertyParamsIdx + direction;
+            if (
+              idx >= 0 &&
+              idx <= Math.floor(
+                (CSSPropertyMap[MasterState.CSSPropertyIdx].values.length - 1) / 4
+              )
+            ) {
+              MasterState.CSSPropertyParamsIdx = idx;
+            }
+          });
+          break;
+        case 6:
+          KnobsButtons.infiniteKnob(val, 5, direction => {
+            const idx = MasterState.CSSPropertyIdx + direction;
+            if (idx >= 0 && idx < CSSPropertyMap.length) {
+              MasterState.CSSPropertyIdx = idx;
+            }
+          });
+          break;
+        case 8:
+          KnobsButtons.infiniteKnob(val, 7, this.navigate);
+/*
         case 1:
           this.append('h1');
           break;
@@ -53,18 +90,7 @@ const MIDIProgramFlow = {
         case 4:
           this.append('div');
           break;
-        case 8:
-          if (val > MasterState.lastKnobSelectValue) {
-            this.navigate(1);
-          } else if (val < MasterState.lastKnobSelectValue) {
-            this.navigate(-1);
-          } else if (val === MasterState.lastKnobSelectValue && val === 0) {
-            this.navigate(-1);
-          } else {
-            this.navigate(1);
-          }
-          MasterState.lastKnobSelectValue = val;
-          break;
+*/
       }
     }
 

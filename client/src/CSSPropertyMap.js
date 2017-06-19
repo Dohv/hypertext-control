@@ -3,23 +3,21 @@ import Conversions from './Conversions';
 const CSSPropertyMap = [
 
   {
-    CSSProperty: 'color',
-    conversion: Conversions.rgba,
+    name: 'color',
     values: [
-      { min: 0, max: 255, step: 1 },
-      { min: 0, max: 255, step: 1 },
-      { min: 0, max: 255, step: 1 },
+      { min: 0, max: 255, step: 8 },
+      { min: 0, max: 255, step: 8 },
+      { min: 0, max: 255, step: 8 },
       { min: 0, max: 1, step: .1 },
     ],
   },
 
   {
-    CSSProperty: 'backgroundColor',
-    conversion: Conversions.rgba,
+    name: 'backgroundColor',
     values: [
-      { min: 0, max: 255, step: 1 },
-      { min: 0, max: 255, step: 1 },
-      { min: 0, max: 255, step: 1 },
+      { min: 0, max: 255, step: 8 },
+      { min: 0, max: 255, step: 8 },
+      { min: 0, max: 255, step: 8 },
       { min: 0, max: 1, step: .1 },
     ],
   },
