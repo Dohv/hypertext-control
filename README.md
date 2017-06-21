@@ -7,7 +7,7 @@ Hypertext Control is a MIDI controlled HTML/CSS development tool. It works with 
 2. Edit the content of the elements and the ability to navigate to the different elements to edit them
 3. Edit CSS for each element with knobs. Current CSS Properties available are background-color, color, padding, margin and font-size
 4. Download an index.html and style.css that is generated from a GET request to the zip/:id route.
-5. Saving and recalling projects to and from the database by pushing a button to enter into project select mode, then browsing the projects with a knob, then pressing the button again to load it into the view to start editing to your hearts content.
+5. Saving and recalling projects to and from the database by pushing a button to enter into project select mode, then browsing the projects with a knob, then pressing the button again to load it into the view to start editing to your heart's content.
 6. User Authentication
 
 ## Technical Notes
