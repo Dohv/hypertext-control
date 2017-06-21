@@ -27,5 +27,15 @@ http://i.imgur.com/GiIkc3C.jpg
 |**B9**    |**B10**   |**B11**   |**B12**   |**B13**   |**B14**   |**B15**   |**B16**   |
 
 #### R1 - R4
-Controls CSS parameters for a particular CSS property.
+Controls CSS parameters for a particular CSS property. For example with color, R1 would control red amount, R2 green amount, R3 blue amount and R4 Alpha.
+#### R6
+CSS Property Bank. Each one-notch turn to the right will select the next CSS Property to edit, which would change the functions of the R1-R4 knobs to reflect attributes of the new CSS property.
+#### R8
+Navigation knob that selects elements (when in edit mode) and navigates through projects (project select mode)
+#### B8
+Find project / load project. Push this to find a project. Opens a modal window to do so. Turn the R8 knob to find the project that you want to edit, then press the B8 button once again to load it into the main window.
+#### B16
+Save project. Opens a modal window with a prompt to input a unique project name. As of now it must be unique. Press the button once again or press enter, and the project is now in the database.
+#### B15
+Download project as index.html and style.css (while in project select mode). The intended button functionality does not currently work, but the GET request with project id if properly placed in the url bar of the browser will trigger a download that works wonderfully. localhost:3001/zip/:id where :id is the project you would like to download. The button does console.log an id for the current selected project.
 
