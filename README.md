@@ -1,7 +1,7 @@
 # hypertext-control
 MIDI Controlled Web Development
 ## Description
-Hypertext Control is a MIDI controlled HTML/CSS development tool. It works with the standard factory settings of the Behringer X-Touch Mini MIDI controller. You can simply plug it in via USB and it should work in Google Chrome. For now, Google Chrome is currently the only browser that supports the Web MIDI API that it depends on. Features so far include:
+Hypertext Control is a MIDI controlled HTML/CSS development tool. It works with the standard factory settings of the Behringer X-Touch Mini MIDI controller. You can simply plug it in via USB and it should work in Google Chrome. I'm not certain about this, but I believe that for now, Google Chrome is currently the only browser that supports the Web MIDI API that it depends on. Features so far include:
 
 1. Create html elements by MIDI buttons
 2. Edit the content of the elements and the ability to navigate to the different elements to edit them
