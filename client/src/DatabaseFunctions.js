@@ -124,6 +124,7 @@ const DatabaseFunctions = {
     if (MasterState.openProjectWindowIsOpen) {
 
       const id = MasterState.projectsData[MasterState.previewableProjectDOMIdx].id;
+      console.log('Selected Document id:' + id);
       console.log('tried to fetch the download');
       //window.location.href = 'localhost:3001/zip/4';
       //window.open('localhost:3001/zip/4', 'HTML CSS Download');

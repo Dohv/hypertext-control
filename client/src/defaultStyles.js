@@ -13,6 +13,15 @@ function defaultStyles(nodeType) {
         backgroundColor: {
           data: [255, 255, 255, 1],
         },
+        padding: {
+          data: [0, 0, 0, 0],
+        },
+        fontSize: {
+          data: [30],
+        },
+        margin: {
+          data: [0, 0, 0, 0],
+        },
       };
       return style;
     case 'p':
@@ -23,6 +32,15 @@ function defaultStyles(nodeType) {
         backgroundColor: {
           data: [255, 255, 255, 1],
         },
+        padding: {
+          data: [0, 0, 0, 0],
+        },
+        fontSize: {
+          data: [20],
+        },
+        margin: {
+          data: [0, 0, 0, 0],
+        },
       };
     case 'div':
       return {
@@ -31,6 +49,15 @@ function defaultStyles(nodeType) {
         },
         backgroundColor: {
           data: [255, 0, 255, 1],
+        },
+        padding: {
+          data: [0, 0, 0, 0],
+        },
+        fontSize: {
+          data: [15],
+        },
+        margin: {
+          data: [0, 0, 0, 0],
         },
       };
   }

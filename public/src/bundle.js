@@ -145,10 +145,21 @@ function toRGBA(rgba) {
   return "rgba(" + rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ", " + rgba[3] + ")";
 }
 
+function toPx4(px) {
+  return px[0] + "px " + px[1] + "px " + px[2] + "px " + px[3] + "px";
+}
+
+function toPx(px) {
+  return px[0] + "px";
+}
+
 var Conversions = {
 
   backgroundColor: toRGBA,
-  color: toRGBA
+  color: toRGBA,
+  padding: toPx4,
+  fontSize: toPx,
+  margin: toPx4
 
 };
 
@@ -177,6 +188,15 @@ var CSSPropertyMap = [{
 }, {
   name: 'backgroundColor',
   values: [{ min: 0, max: 255, step: 8 }, { min: 0, max: 255, step: 8 }, { min: 0, max: 255, step: 8 }, { min: 0, max: 1, step: .1 }]
+}, {
+  name: 'padding',
+  values: [{ min: 0, max: 255, step: 1 }, { min: 0, max: 255, step: 1 }, { min: 0, max: 255, step: 1 }, { min: 0, max: 255, step: 1 }]
+}, {
+  name: 'fontSize',
+  values: [{ min: 0, max: 2000, step: 1 }]
+}, {
+  name: 'margin',
+  values: [{ min: 0, max: 255, step: 1 }, { min: 0, max: 255, step: 1 }, { min: 0, max: 255, step: 1 }, { min: 0, max: 255, step: 1 }]
 }];
 
 exports.default = CSSPropertyMap;
@@ -454,9 +474,10 @@ var DatabaseFunctions = {
     if (_MasterState2.default.openProjectWindowIsOpen) {
 
       var id = _MasterState2.default.projectsData[_MasterState2.default.previewableProjectDOMIdx].id;
+      console.log('Selected Document id:' + id);
       console.log('tried to fetch the download');
       //window.location.href = 'localhost:3001/zip/4';
-      window.open('localhost:3001/zip/4', 'HTML CSS Download');
+      //window.open('localhost:3001/zip/4', 'HTML CSS Download');
       /*
             fetch(`/zip/${4}`, {
               credentials: 'same-origin',*/
@@ -569,6 +590,15 @@ function defaultStyles(nodeType) {
         },
         backgroundColor: {
           data: [255, 255, 255, 1]
+        },
+        padding: {
+          data: [0, 0, 0, 0]
+        },
+        fontSize: {
+          data: [30]
+        },
+        margin: {
+          data: [0, 0, 0, 0]
         }
       };
       return style;
@@ -579,6 +609,15 @@ function defaultStyles(nodeType) {
         },
         backgroundColor: {
           data: [255, 255, 255, 1]
+        },
+        padding: {
+          data: [0, 0, 0, 0]
+        },
+        fontSize: {
+          data: [20]
+        },
+        margin: {
+          data: [0, 0, 0, 0]
         }
       };
     case 'div':
@@ -588,6 +627,15 @@ function defaultStyles(nodeType) {
         },
         backgroundColor: {
           data: [255, 0, 255, 1]
+        },
+        padding: {
+          data: [0, 0, 0, 0]
+        },
+        fontSize: {
+          data: [15]
+        },
+        margin: {
+          data: [0, 0, 0, 0]
         }
       };
   }
